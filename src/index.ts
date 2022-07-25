@@ -16,10 +16,16 @@ const intervalos$ = new Observable<number>( subs => {
 
 const subject$ = new Subject();
 
-intervalos$.subscribe( subject$ );
+const subscription = intervalos$.subscribe( subject$ );
 
 // code const subs1 = intervalos$.subscribe( console.log );
 // code const subs2 = intervalos$.subscribe( console.log );
 
-const subs1 = subject$.subscribe( console.log );
-const subs2 = subject$.subscribe( console.log );
+const subs1 = subject$.subscribe( observer );
+const subs2 = subject$.subscribe( observer );
+
+setTimeout( () => {
+    subject$.next( 10 );
+    subject$.complete();
+    subscription.unsubscribe();
+}, 5000);
