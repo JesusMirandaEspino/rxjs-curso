@@ -13,19 +13,26 @@ const intervalo =  setInterval( () => {
                         count++;
                         suscriber.next( count );
                         console.log(count);
-                    }, 2500);
+                        
+                    }, 1000);
+
+    setTimeout( () => {
+        suscriber.complete();
+    }, 2000);            
+        
     return () => {
         clearInterval( intervalo );
         console.log('Intervalo');
     };
 });
 
-const subs1 =intervalos$.subscribe( num => console.log( num ) );
-const subs2 =intervalos$.subscribe( num => console.log( num ) );
-const subs3 =intervalos$.subscribe( num => console.log( num ) );
+const subs1 =intervalos$.subscribe( observer );
+const subs2 =intervalos$.subscribe( observer );
+const subs3 =intervalos$.subscribe( observer );
 
 setTimeout( () => {
     subs1.unsubscribe();
     subs2.unsubscribe();
     subs3.unsubscribe();
-}, 7500);
+    console.log('Intervalo completado');
+}, 6000);
