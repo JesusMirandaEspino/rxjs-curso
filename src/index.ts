@@ -11,11 +11,17 @@ const saludar2 =  (nombre) => {
 
 
 //  code asyncScheduler.schedule( saludar, 2000 );
-
-
 // code asyncScheduler.schedule( saludar2, 2000, 'Jesus' );
 
 
-asyncScheduler.schedule( function(state){
-    console.log('state: ', state)
+const sub = asyncScheduler.schedule( function(state){
+    console.log('state: ', state);
+    this.schedule( state + 1, 1000 )
 }, 3000, 0 );
+
+
+// code  setTimeout( () => {
+// code      sub.unsubscribe();
+// code }, 9000);
+
+asyncScheduler.schedule( () =>  sub.unsubscribe(), 9000 );
