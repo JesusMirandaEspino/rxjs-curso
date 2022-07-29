@@ -1,27 +1,27 @@
-import { asyncScheduler } from "rxjs";
+import { of, from } from 'rxjs';
 
-const saludar =  () => {
-    console.log('saludar');
+
+/*  
+    of toma argumentos y genera una secuencia,
+    from array, observable, promesa, iterable
+*/
+
+const observer = {
+    next: value => console.log( 'Siguiente [Next]: ', value ),
+    error: error => console.warn( 'Error [Obs]: ', error ),
+    complete: () => console.info('Completado [Obs]')
 }
 
-const saludar2 =  (nombre) => {
-    console.log(`saludar ${nombre}`);
-} 
 
+const source1$ = from([ 1,2,3,4,5,6,7,8,9 ]);
+const source2$ = of([ 1,2,3,4,5,6,7,8,9 ]);
+const source3$ = from('Jesus');
+const source4$ = from(fetch( 'https://api.github.com/users/klerith' ));
 
+const source5$ = from('Jesus');
 
-//  code asyncScheduler.schedule( saludar, 2000 );
-// code asyncScheduler.schedule( saludar2, 2000, 'Jesus' );
-
-
-const sub = asyncScheduler.schedule( function(state){
-    console.log('state: ', state);
-    this.schedule( state + 1, 1000 )
-}, 3000, 0 );
-
-
-// code  setTimeout( () => {
-// code      sub.unsubscribe();
-// code }, 9000);
-
-asyncScheduler.schedule( () =>  sub.unsubscribe(), 9000 );
+source1$.subscribe( observer );
+source2$.subscribe( observer );
+source3$.subscribe( observer );
+source4$.subscribe( observer );
+source5$.subscribe( observer );
