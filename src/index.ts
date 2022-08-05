@@ -1,4 +1,5 @@
 import { fromEvent } from "rxjs";
+import { map, tap } from "rxjs/operators";
 
 const texto = document.createElement( 'div' );
 
@@ -63,9 +64,19 @@ const progressBar = document.createElement('div');
 progressBar.setAttribute( 'class', 'progress-bar' );
 body.append(progressBar);
 
+const calcularPorcentajeScroll = (event) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.target.documentElement;
+
+    return ( scrollTop / ( scrollHeight - clientHeight ) ) * 100;  
+
+}
+
 const scrollBar$ = fromEvent( document, 'scroll' );
 
-const progress$ = scrollBar$.pipe();
+const progress$ = scrollBar$.pipe(
+    map( calcularPorcentajeScroll ),
+    tap( console.log )
+);
 
 progress$.subscribe( porcentaje => { 
     progressBar.style.width = `${ porcentaje }%`
