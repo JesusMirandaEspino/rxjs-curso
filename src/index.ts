@@ -1,14 +1,10 @@
-import { fromEvent } from 'rxjs';
-import { map, takeWhile } from 'rxjs/operators';
+import { fromEvent, interval } from "rxjs";
 
-const click$ = fromEvent<MouseEvent>( document, 'click' );
+const boton = document.createElement('button');
 
+boton.innerHTML = 'Detener Timer';
 
-click$.pipe(
-    map( ({ x,y }) => ({x,y})),
-    // takeWhile( ({ y }) => y <= 150 )
-    takeWhile( ({ y }) => y <= 150, true )
-    ).subscribe({
-        next: val => console.log( val ),
-        complete: () => console.info('Completado [Obs]')
-});
+document.querySelector('body').append(boton);
+
+const counter = interval(1000);
+const clickBoton = fromEvent( boton, 'click' );
