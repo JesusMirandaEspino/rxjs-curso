@@ -1,12 +1,7 @@
-import { fromEvent } from "rxjs";
-import { auditTime, tap, map } from "rxjs/operators";
+const url = 'https://api.github.com/users?per_page=5';
 
+const fecthPromesa = fetch(url);
 
-const click$ = fromEvent<MouseEvent>(document, "click");
-
-
-click$.pipe(
-    map( ({ x }) => x ),
-    tap(value => console.log('tap',value)  ),
-    auditTime(  2000 )
-    ).subscribe(console.log)
+fecthPromesa.then((resp) => {
+    resp.json().then((data) => {console.log(data);});
+}).catch( error => {console.warn('Error ', error)});
