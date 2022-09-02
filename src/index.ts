@@ -1,34 +1,11 @@
-import { catchError, pluck } from 'rxjs/operators';
-import { ajax, AjaxError } from 'rxjs/ajax'
-import { of } from 'rxjs';
+import { ajax } from 'rxjs/ajax';
 
-const url = 'https://api.github.com/users?per_page=5';
+const url = 'https://httpbin.org/delay/1';
+// const url = 'https://api.github.com/users?per_page=5';
 
-const manejaErrores = (response: Response) => {
-    if(!response.ok){
-        throw new Error(response.statusText);
-    }
+const obs$ = ajax.getJSON( url, {
+    'Content-Type': 'application/json',
+    'mi-token': 'ABC123'
+});
 
-    return response;
-}
-
-const atrapaError = (err: AjaxError) => {
-            console.warn('Error ', err);
-                return of([]);
-            }
-
-const fecthPromesa = fetch(url);
-
-
-/* code promise
-fecthPromesa
-    .then( manejaErrores )
-    .then((resp) => {   resp.json()
-    .then((data) => {console.log(data);});
-}).catch( error => {console.warn('Error ', error)});*/
-
-
-ajax(url).pipe(
-    pluck( 'response' ),
-    catchError( atrapaError )
-    ).subscribe( user => {console.log(user)});
+obs$.subscribe( data => console.log('data:', data ));
