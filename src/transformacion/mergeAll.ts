@@ -1,7 +1,8 @@
 import { fromEvent, Observable } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import { debounceTime, map, mergeAll, pluck } from 'rxjs/operators';
-import { GithubUser, GithubUsersResponse } from "./interfaces/github-user-interface";
+import { GithubUser, GithubUsersResponse } from "../interfaces/github-user-interface";
+
 
 const body = document.querySelector('body');
 
