@@ -1,6 +1,7 @@
 import { fromEvent, Observable } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import { debounceTime, map, mergeAll, pluck } from 'rxjs/operators';
+import { GithubUser, GithubUsersResponse } from "./interfaces/github-user-interface";
 
 const body = document.querySelector('body');
 
@@ -12,11 +13,14 @@ body.append( textInput, orderList );
 
 const input$ = fromEvent<KeyboardEvent>( textInput, 'keyup' );  
 
-input$.pipe( 
-        debounceTime<KeyboardEvent>(500),
-        map<KeyboardEvent, string>(evento => evento.target['value']),
-        map<string, Observable<any>>( texto => ajax.getJSON( `https://api.github.com/users/${texto}` )
-        ),
-        mergeAll(),
-        pluck('items')
-    ).subscribe( resp => console.log(resp) );
+input$.pipe(
+    debounceTime<KeyboardEvent>(500),
+    map<KeyboardEvent, string>(event => (event.target as HTMLInputElement).value),
+    map<string, Observable<GithubUsersResponse>>(text => ajax.getJSON(
+        `https://api.github.com/search/users?q=${text}`
+    )),
+    mergeAll<Observable<GithubUsersResponse>>(),
+    map<GithubUsersResponse, GithubUser[]>(item => item.items)
+    ).subscribe(users => {
+    console.log('users', users);
+});
