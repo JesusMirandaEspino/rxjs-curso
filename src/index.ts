@@ -1,45 +1,14 @@
-import { fromEvent, Observable } from "rxjs";
-import { ajax } from "rxjs/ajax";
-import { debounceTime, map, mergeAll, pluck } from 'rxjs/operators';
-import { GithubUser, GithubUsersResponse } from "./interfaces/github-user-interface";
+import { interval, of } from 'rxjs';
+import { map, mergeMap, take } from 'rxjs/operators';
 
-const body = document.querySelector('body');
+const letras$ = of('a', 'b', 'c', 'd', 'e', 'f');
 
-const textInput = document.createElement('input');
-const orderList = document.createElement('ol');
+letras$.pipe(
+        mergeMap( (letra) => interval(1000).pipe(
+            map( i => letra +  i),
+            take(3)
+    ))).subscribe({
+    next: val => console.log('next: ', val),
+    complete:() => console.log('complete: ')
+});
 
-const mostrarUsuarios = ( usuarios: GithubUser[] ) => {
-    console.log(usuarios);
-    orderList.innerHTML = '';
-
-    for( const usuario of usuarios ){
-        const li = document.createElement('li');
-        const img = document.createElement('img');
-        img.src = usuario.avatar_url;
-
-        const anchor = document.createElement('a');
-        anchor.href = usuario.html_url;
-        anchor.text = 'Ver Pagina';
-        anchor.target = '_blank';
-
-        li.append(img);
-        li.append(usuario.login + ' ');
-        li.append(anchor);
-    }
-
-}
-
-body.append( textInput, orderList );
-
-
-const input$ = fromEvent<KeyboardEvent>( textInput, 'keyup' );  
-
-input$.pipe(
-    debounceTime<KeyboardEvent>(500),
-    map<KeyboardEvent, string>(event => (event.target as HTMLInputElement).value),
-    map<string, Observable<GithubUsersResponse>>(text => ajax.getJSON(
-        `https://api.github.com/search/users?q=${text}`
-    )),
-    mergeAll<Observable<GithubUsersResponse>>(),
-    map<GithubUsersResponse, GithubUser[]>(item => item.items)
-    ).subscribe(mostrarUsuarios);
